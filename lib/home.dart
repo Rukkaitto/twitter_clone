@@ -22,7 +22,11 @@ class HomePage extends StatelessWidget {
             child: BlocConsumer<UserCubit, UserState>(
               listener: (context, state) {
                 if (state is UserError) {
-                  print(state.message);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                    ),
+                  );
                 }
               },
               builder: (context, state) {

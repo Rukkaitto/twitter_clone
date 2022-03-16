@@ -33,7 +33,7 @@ class LoginView extends StatelessWidget {
                 ),
               ),
               ElevatedButton(
-                onPressed: handleLogin,
+                onPressed: () => handleLogin(context),
                 child: const Text('Login'),
               ),
               TextButton(
@@ -51,18 +51,31 @@ class LoginView extends StatelessWidget {
     Navigator.pushNamed(context, '/register');
   }
 
-  void handleLogin() async {
+  void handleLogin(BuildContext context) async {
     try {
-      final userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('User not found');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('User not found'),
+          ),
+        );
       } else if (e.code == 'wrong-password') {
-        print('Wrong password');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Wrong password'),
+          ),
+        );
+      } else if (e.code == 'invalid-email') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Invalid email'),
+          ),
+        );
       }
     }
   }
