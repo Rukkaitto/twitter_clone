@@ -9,31 +9,40 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          TextField(
-            controller: _emailController,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Login'),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                ),
+              ),
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                ),
+              ),
+              ElevatedButton(
+                onPressed: handleLogin,
+                child: const Text('Login'),
+              ),
+              TextButton(
+                onPressed: () => handleRegister(context),
+                child: const Text('Register'),
+              ),
+            ],
           ),
-          TextField(
-            controller: _passwordController,
-            obscureText: true,
-            decoration: const InputDecoration(
-              labelText: 'Password',
-            ),
-          ),
-          TextButton(
-            onPressed: handleLogin,
-            child: const Text('Login'),
-          ),
-          TextButton(
-            onPressed: () => handleRegister(context),
-            child: const Text('Register'),
-          ),
-        ],
+        ),
       ),
     );
   }

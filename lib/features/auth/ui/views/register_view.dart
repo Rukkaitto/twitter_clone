@@ -5,6 +5,7 @@ class RegisterView extends StatelessWidget {
   static String routeName = '/register';
   RegisterView({Key? key}) : super(key: key);
 
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -14,9 +15,17 @@ class RegisterView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Register'),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(20),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            TextField(
+              controller: _usernameController,
+              decoration: const InputDecoration(
+                labelText: 'Username',
+              ),
+            ),
             TextField(
               controller: _emailController,
               decoration: const InputDecoration(
@@ -30,7 +39,7 @@ class RegisterView extends StatelessWidget {
                 labelText: 'Password',
               ),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () => handleRegister(context),
               child: const Text('Register'),
             ),
@@ -47,6 +56,7 @@ class RegisterView extends StatelessWidget {
         email: _emailController.text,
         password: _passwordController.text,
       );
+      userCredential.user?.updateDisplayName(_usernameController.text);
       Navigator.of(context).pop();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

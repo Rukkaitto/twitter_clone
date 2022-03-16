@@ -9,27 +9,23 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Twitter clone'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.exit_to_app),
-            onPressed: handleLogout,
-          ),
-        ],
-      ),
-      body: buildWithAuthState(),
-    );
-  }
-
-  Widget buildWithAuthState() {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return const Center(
-            child: Text('logged in'),
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Twitter Clone'),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.exit_to_app),
+                  onPressed: handleLogout,
+                ),
+              ],
+            ),
+            body: Center(
+              child: Text('Welcome ${snapshot.data?.displayName}!'),
+            ),
           );
         } else {
           return LoginView();
