@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -56,7 +57,12 @@ class RegisterView extends StatelessWidget {
         email: _emailController.text,
         password: _passwordController.text,
       );
-      userCredential.user?.updateDisplayName(_usernameController.text);
+      await FirebaseFirestore.instance
+          .doc('users/${userCredential.user?.uid}')
+          .set({
+        'username': _usernameController.text,
+        'email': _emailController.text,
+      });
       Navigator.of(context).pop();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
