@@ -22,11 +22,7 @@ class HomePage extends StatelessWidget {
             child: BlocConsumer<UserCubit, UserState>(
               listener: (context, state) {
                 if (state is UserError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.message),
-                    ),
-                  );
+                  print(state.message);
                 }
               },
               builder: (context, state) {
@@ -48,6 +44,28 @@ class HomePage extends StatelessWidget {
 
   Widget buildLoaded(UserEntity user) {
     return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.edit),
+      ),
       appBar: AppBar(
         title: const Text('Twitter Clone'),
         actions: [

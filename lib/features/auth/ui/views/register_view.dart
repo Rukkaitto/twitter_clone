@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:twitter_clone/dependency_injector.dart';
+import 'package:twitter_clone/features/auth/domain/entities/user_entity.dart';
+import 'package:twitter_clone/features/auth/domain/repositories/repository.dart';
 
 class RegisterView extends StatelessWidget {
   static String routeName = '/register';
@@ -57,13 +60,15 @@ class RegisterView extends StatelessWidget {
         email: _emailController.text,
         password: _passwordController.text,
       );
-      await FirebaseFirestore.instance
-          .doc('users/${userCredential.user?.uid}')
-          .set({
-        'username': _usernameController.text,
-        'email': _emailController.text,
-      });
-      Navigator.of(context).pop();
+      if (userCredential.user != null) {
+        final user = UserEntity(
+          uid: userCredential.user!.uid,
+          email: _emailController.text,
+          username: _usernameController.text,
+        );
+        await getIt<UserRepository>().addUser(user);
+        Navigator.of(context).pop();
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak');
