@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:twitter_clone/features/auth/data/exceptions/user_not_found_exception.dart';
 import 'package:twitter_clone/features/auth/domain/entities/user_entity.dart';
 import 'package:twitter_clone/features/auth/domain/repositories/repository.dart';
 
@@ -15,8 +16,8 @@ class UserCubit extends Cubit<UserState> {
     try {
       final user = await repository.getUser(id);
       emit(UserLoaded(user: user));
-    } catch (e) {
-      emit(UserError(message: e.toString()));
+    } on UserNotFoundException {
+      emit(const UserError(message: 'User not found.'));
     }
   }
 }

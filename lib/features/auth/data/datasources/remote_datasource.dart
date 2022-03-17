@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:twitter_clone/features/auth/data/exceptions/user_not_found_exception.dart';
 import 'package:twitter_clone/features/auth/data/models/user_model.dart';
 
 abstract class UserRemoteDatasource {
@@ -17,7 +18,7 @@ class UserRemoteDatasourceImpl implements UserRemoteDatasource {
   @override
   Future<UserModel> getUser(String id) {
     return firestore.doc('$collection/$id').get().then((snapshot) {
-      if (snapshot.data() == null) throw Exception('User $id not found.');
+      if (snapshot.data() == null) throw UserNotFoundException();
       return UserModel.fromJson(snapshot.data()!);
     });
   }
