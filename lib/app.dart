@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twitter_clone/features/user/ui/views/register_view.dart';
 import 'package:twitter_clone/features/post/ui/views/post_form_view.dart';
+import 'package:twitter_clone/features/user/ui/views/user_view.dart';
 import 'package:twitter_clone/home.dart';
 
 class App extends StatelessWidget {
@@ -14,6 +15,7 @@ class App extends StatelessWidget {
       routes: {
         RegisterView.routeName: (context) => RegisterView(),
         PostFormView.routeName: (context) => PostFormView(),
+        UserView.routeName: (context) => const UserView(),
       },
       home: const HomePage(),
     );

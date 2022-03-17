@@ -11,7 +11,7 @@ import 'package:twitter_clone/features/user/ui/cubit/user_cubit.dart';
 import 'package:twitter_clone/features/user/ui/views/login_view.dart';
 import 'package:twitter_clone/features/post/ui/views/post_form_view.dart';
 import 'package:twitter_clone/features/post/ui/views/posts_view.dart';
-import 'package:twitter_clone/features/user/ui/views/profile_view.dart';
+import 'package:twitter_clone/features/user/ui/widgets/profile_widget.dart';
 
 class HomePage extends StatefulWidget {
   static String routeName = '/';
@@ -25,11 +25,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _tabSelectedIndex = 0;
   late PageController _pageController;
-  static const List<Widget> tabs = <Widget>[
-    PostsView(),
-    Center(child: Text('Search')),
-    ProfileView(),
-  ];
 
   @override
   void initState() {
@@ -123,7 +118,13 @@ class _HomePageState extends State<HomePage> {
       body: PageView(
         controller: _pageController,
         onPageChanged: _onPageChanged,
-        children: tabs,
+        children: [
+          const PostsView(),
+          const Center(child: Text('Search')),
+          ProfileView(
+            user: user,
+          ),
+        ],
       ),
     );
   }

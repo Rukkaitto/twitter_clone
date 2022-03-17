@@ -24,4 +24,9 @@ class UserRepositoryImpl extends UserRepository {
   Future<String> uploadAvatar(String userUid, Uint8List image) {
     return remoteDatasource.uploadAvatar(userUid, image);
   }
+
+  @override
+  Future<void> addFollower(String userUid, String followerUid) {
+    return remoteDatasource.addFollower(userUid, followerUid);
+  }
 }

@@ -11,6 +11,8 @@ abstract class UserRemoteDatasource {
   Future<void> addUser(UserModel user);
 
   Future<String> uploadAvatar(String userUid, Uint8List image);
+
+  Future<void> addFollower(String userUid, String followerUid);
 }
 
 class UserRemoteDatasourceImpl implements UserRemoteDatasource {
@@ -44,5 +46,15 @@ class UserRemoteDatasourceImpl implements UserRemoteDatasource {
     final url = await result.ref.getDownloadURL();
     await firestore.doc('$collection/$userUid').update({'avatarUrl': url});
     return url;
+  }
+
+  @override
+  Future<void> addFollower(String userUid, String followerUid) async {
+    await firestore.doc('$collection/$userUid').update({
+      'followers': FieldValue.arrayUnion([followerUid])
+    });
+    await firestore.doc('$collection/$followerUid').update({
+      'following': FieldValue.arrayUnion([userUid])
+    });
   }
 }

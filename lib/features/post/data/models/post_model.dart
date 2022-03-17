@@ -4,15 +4,18 @@ class PostModel extends PostEntity {
   const PostModel({
     required String content,
     required String authorUid,
+    required int createdAt,
   }) : super(
           content: content,
           authorUid: authorUid,
+          createdAt: createdAt,
         );
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
       content: json['content'] as String,
       authorUid: json['authorUid'] as String,
+      createdAt: json['createdAt'] as int,
     );
   }
 
@@ -20,6 +23,7 @@ class PostModel extends PostEntity {
     return PostModel(
       content: entity.content,
       authorUid: entity.authorUid,
+      createdAt: entity.createdAt,
     );
   }
 
@@ -27,6 +31,7 @@ class PostModel extends PostEntity {
     return {
       'content': content,
       'authorUid': authorUid,
+      'createdAt': createdAt,
     };
   }
 }

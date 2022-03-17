@@ -39,6 +39,7 @@ class PostFormView extends StatelessWidget {
     final post = PostEntity(
       content: _contentTextController.text,
       authorUid: user.uid,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
     );
     getIt<PostRepository>().addPost(post);
   }

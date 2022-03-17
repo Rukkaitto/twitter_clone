@@ -7,23 +7,19 @@ import 'package:twitter_clone/features/post/ui/widgets/post_widget.dart';
 import 'package:twitter_clone/features/user/domain/entities/user_entity.dart';
 import 'package:twitter_clone/features/user/domain/repositories/repository.dart';
 import 'package:twitter_clone/features/user/ui/cubit/profile_cubit.dart';
-import 'package:twitter_clone/features/user/ui/cubit/user_cubit.dart';
 
 class ProfileView extends StatelessWidget {
-  const ProfileView({Key? key}) : super(key: key);
+  final UserEntity user;
+  const ProfileView({required this.user, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) throw Exception('User is null');
     return BlocProvider<ProfileCubit>(
       create: (context) => getIt<ProfileCubit>()..getProfile(user.uid),
       child: BlocBuilder<ProfileCubit, ProfileState>(
         builder: (context, state) {
           if (state is ProfileLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return buildLoading();
           } else if (state is ProfileLoaded) {
             return buildLoaded(state);
           }
@@ -33,21 +29,39 @@ class ProfileView extends StatelessWidget {
     );
   }
 
+  Widget buildLoading() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
   Widget buildLoaded(ProfileLoaded profile) {
-    return Column(
-      children: [
-        buildAvatar(profile.user),
-        buildUsername(profile),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text('${profile.posts.length} posts'),
-            Text('${profile.user.followers?.length ?? 0} followers'),
-            Text('${profile.user.following?.length ?? 0} follows'),
-          ],
-        ),
-        buildPosts(profile),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Column(
+        children: [
+          buildAvatar(profile.user),
+          buildUsername(profile),
+          buildNumbers(profile),
+          Expanded(
+            child: buildPosts(profile),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildNumbers(ProfileLoaded profile) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Text('${profile.posts.length} posts'),
+          Text('${profile.user.followers?.length ?? 0} followers'),
+          Text('${profile.user.following?.length ?? 0} follows'),
+        ],
+      ),
     );
   }
 
@@ -63,8 +77,31 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget buildUsername(ProfileLoaded profile) =>
-      Text('@${profile.user.username}');
+  Widget buildUsername(ProfileLoaded profile) {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final showFollowsYou =
+        profile.user.following?.contains(currentUser?.uid) ?? false;
+
+    return Builder(builder: (context) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '@${profile.user.username}',
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          if (showFollowsYou)
+            Text(
+              'Follows you',
+              style: Theme.of(context).textTheme.caption,
+            ),
+        ],
+      );
+    });
+  }
 
   Widget buildAvatar(UserEntity user) {
     if (user.avatarUrl == null) {

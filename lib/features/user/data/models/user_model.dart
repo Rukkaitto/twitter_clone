@@ -23,8 +23,8 @@ class UserModel extends UserEntity {
       email: json['email'] as String,
       username: json['username'] as String,
       avatarUrl: json['avatarUrl'] as String?,
-      followers: json['followers'] as List<String>?,
-      following: json['following'] as List<String>?,
+      followers: json['followers']?.cast<String>(),
+      following: json['following']?.cast<String>(),
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:twitter_clone/features/post/data/models/post_model.dart';
+import 'package:twitter_clone/features/user/data/models/user_model.dart';
 
 abstract class PostRemoteDatasource {
   Future<void> addPost(PostModel post);
@@ -31,11 +32,26 @@ class PostRemoteDatasourceImpl implements PostRemoteDatasource {
 
   @override
   Future<List<PostModel>> getFeed(String userUid) async {
-    final posts = await firestore
-        .collection(collection)
-        .where('authorUid', isEqualTo: userUid)
-        .get();
-    return posts.docs.map((doc) => PostModel.fromJson(doc.data())).toList();
+    final user = await firestore.doc('users/$userUid').get();
+    if (user.data() == null) return [];
+    final userModel = UserModel.fromJson(user.data()!);
+
+    final postDocuments = await firestore.collection(collection).get();
+    final postModels = postDocuments.docs
+        .map((doc) => PostModel.fromJson(doc.data()))
+        .toList();
+
+    final ownPosts = postModels.where((post) => post.authorUid == userUid);
+    final followingPosts = postModels.where(
+      (post) => userModel.following?.contains(post.authorUid) ?? false,
+    );
+
+    final posts = [
+      ...ownPosts,
+      ...followingPosts,
+    ]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    return posts;
   }
 
   @override
