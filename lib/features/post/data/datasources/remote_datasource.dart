@@ -5,6 +5,7 @@ abstract class PostRemoteDatasource {
   Future<void> addPost(PostModel post);
   Future<List<PostModel>> getPosts();
   Future<List<PostModel>> getFeed(String userUid);
+  Future<List<PostModel>> getPostsFromUser(String userUid);
 }
 
 class PostRemoteDatasourceImpl implements PostRemoteDatasource {
@@ -30,6 +31,15 @@ class PostRemoteDatasourceImpl implements PostRemoteDatasource {
 
   @override
   Future<List<PostModel>> getFeed(String userUid) async {
+    final posts = await firestore
+        .collection(collection)
+        .where('authorUid', isEqualTo: userUid)
+        .get();
+    return posts.docs.map((doc) => PostModel.fromJson(doc.data())).toList();
+  }
+
+  @override
+  Future<List<PostModel>> getPostsFromUser(String userUid) async {
     final posts = await firestore
         .collection(collection)
         .where('authorUid', isEqualTo: userUid)

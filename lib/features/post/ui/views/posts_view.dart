@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:twitter_clone/features/post/ui/cubit/feed_cubit.dart';
+import 'package:twitter_clone/features/post/ui/widgets/post_widget.dart';
 
 class PostsView extends StatelessWidget {
   const PostsView({Key? key}) : super(key: key);
@@ -44,14 +45,15 @@ class PostsView extends StatelessWidget {
           onRefresh: () async {
             context.read<FeedCubit>().getFeed(userUid);
           },
-          child: ListView.builder(
+          child: ListView.separated(
             physics: const AlwaysScrollableScrollPhysics(),
             itemCount: posts.length,
+            separatorBuilder: (context, index) => const Divider(),
             itemBuilder: (context, index) {
               final postWithUser = posts[index];
-              return ListTile(
-                leading: Text(postWithUser.user.username),
-                title: Text(postWithUser.post.content),
+              return PostWidget(
+                user: postWithUser.user,
+                post: postWithUser.post,
               );
             },
           ),

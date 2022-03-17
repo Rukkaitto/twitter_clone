@@ -5,10 +5,16 @@ class UserModel extends UserEntity {
     required String uid,
     required String email,
     required String username,
+    String? avatarUrl,
+    List<String>? followers,
+    List<String>? following,
   }) : super(
           uid: uid,
           email: email,
           username: username,
+          avatarUrl: avatarUrl,
+          followers: followers,
+          following: following,
         );
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -16,6 +22,9 @@ class UserModel extends UserEntity {
       uid: json['uid'] as String,
       email: json['email'] as String,
       username: json['username'] as String,
+      avatarUrl: json['avatarUrl'] as String?,
+      followers: json['followers'] as List<String>?,
+      following: json['following'] as List<String>?,
     );
   }
 
@@ -24,6 +33,9 @@ class UserModel extends UserEntity {
       uid: entity.uid,
       email: entity.email,
       username: entity.username,
+      avatarUrl: entity.avatarUrl,
+      followers: entity.followers,
+      following: entity.following,
     );
   }
 
@@ -32,6 +44,9 @@ class UserModel extends UserEntity {
       'uid': uid,
       'email': email,
       'username': username,
+      'avatarUrl': avatarUrl,
+      'followers': followers,
+      'following': following,
     };
   }
 }

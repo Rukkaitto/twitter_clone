@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:twitter_clone/features/user/data/datasources/remote_datasource.dart';
 import 'package:twitter_clone/features/user/data/models/user_model.dart';
 import 'package:twitter_clone/features/user/domain/entities/user_entity.dart';
@@ -16,5 +18,10 @@ class UserRepositoryImpl extends UserRepository {
   @override
   Future<void> addUser(UserEntity user) {
     return remoteDatasource.addUser(UserModel.fromEntity(user));
+  }
+
+  @override
+  Future<String> uploadAvatar(String userUid, Uint8List image) {
+    return remoteDatasource.uploadAvatar(userUid, image);
   }
 }
