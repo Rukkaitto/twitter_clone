@@ -17,4 +17,9 @@ class PostRepositoryImpl implements PostRepository {
   Future<List<PostEntity>> getPosts() {
     return remoteDatasource.getPosts();
   }
+
+  @override
+  Future<List<PostEntity>> getFeed(String userUid) {
+    return remoteDatasource.getFeed(userUid);
+  }
 }

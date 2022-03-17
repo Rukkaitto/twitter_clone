@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:twitter_clone/features/auth/data/exceptions/user_not_found_exception.dart';
-import 'package:twitter_clone/features/auth/data/models/user_model.dart';
+import 'package:twitter_clone/features/user/data/exceptions/user_not_found_exception.dart';
+import 'package:twitter_clone/features/user/data/models/user_model.dart';
 
 abstract class UserRemoteDatasource {
   Future<UserModel> getUser(String id);

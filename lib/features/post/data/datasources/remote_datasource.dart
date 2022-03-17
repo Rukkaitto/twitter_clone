@@ -4,6 +4,7 @@ import 'package:twitter_clone/features/post/data/models/post_model.dart';
 abstract class PostRemoteDatasource {
   Future<void> addPost(PostModel post);
   Future<List<PostModel>> getPosts();
+  Future<List<PostModel>> getFeed(String userUid);
 }
 
 class PostRemoteDatasourceImpl implements PostRemoteDatasource {
@@ -25,5 +26,14 @@ class PostRemoteDatasourceImpl implements PostRemoteDatasource {
           snapshot.docs.map((doc) => PostModel.fromJson(doc.data())).toList();
       return posts;
     });
+  }
+
+  @override
+  Future<List<PostModel>> getFeed(String userUid) async {
+    final posts = await firestore
+        .collection(collection)
+        .where('authorUid', isEqualTo: userUid)
+        .get();
+    return posts.docs.map((doc) => PostModel.fromJson(doc.data())).toList();
   }
 }

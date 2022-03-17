@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:twitter_clone/dependency_injector.dart';
-import 'package:twitter_clone/features/auth/domain/entities/user_entity.dart';
-import 'package:twitter_clone/features/auth/domain/repositories/repository.dart';
+import 'package:twitter_clone/features/user/domain/entities/user_entity.dart';
+import 'package:twitter_clone/features/user/domain/repositories/repository.dart';
 
 class RegisterView extends StatelessWidget {
   static String routeName = '/register';

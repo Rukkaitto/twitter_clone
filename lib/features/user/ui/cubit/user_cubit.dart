@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:twitter_clone/features/auth/data/exceptions/user_not_found_exception.dart';
-import 'package:twitter_clone/features/auth/domain/entities/user_entity.dart';
-import 'package:twitter_clone/features/auth/domain/repositories/repository.dart';
+import 'package:twitter_clone/features/user/data/exceptions/user_not_found_exception.dart';
+import 'package:twitter_clone/features/user/domain/entities/user_entity.dart';
+import 'package:twitter_clone/features/user/domain/repositories/repository.dart';
 
 part 'user_state.dart';
 

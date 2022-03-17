@@ -5,11 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:twitter_clone/dependency_injector.dart';
-import 'package:twitter_clone/features/auth/domain/entities/user_entity.dart';
-import 'package:twitter_clone/features/auth/ui/cubit/user_cubit.dart';
-import 'package:twitter_clone/features/auth/ui/views/login_view.dart';
+import 'package:twitter_clone/features/post/ui/cubit/feed_cubit.dart';
+import 'package:twitter_clone/features/user/domain/entities/user_entity.dart';
+import 'package:twitter_clone/features/user/ui/cubit/user_cubit.dart';
+import 'package:twitter_clone/features/user/ui/views/login_view.dart';
 import 'package:twitter_clone/features/post/ui/views/post_form_view.dart';
 import 'package:twitter_clone/features/post/ui/views/posts_view.dart';
+import 'package:twitter_clone/features/user/ui/views/profile_view.dart';
 
 class HomePage extends StatefulWidget {
   static String routeName = '/';
@@ -22,16 +24,23 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _tabSelectedIndex = 0;
+  late PageController _pageController;
   static const List<Widget> tabs = <Widget>[
     PostsView(),
     Center(child: Text('Search')),
-    Center(child: Text('Profile')),
+    ProfileView(),
   ];
 
-  void _onTabChanged(int index) {
-    setState(() {
-      _tabSelectedIndex = index;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _pageController.dispose();
   }
 
   @override
@@ -40,8 +49,15 @@ class _HomePageState extends State<HomePage> {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, authSnapshot) {
         if (authSnapshot.hasData) {
-          return BlocProvider<UserCubit>(
-            create: (_) => getIt()..getUser(authSnapshot.data!.uid),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<UserCubit>(
+                create: (_) => getIt()..getUser(authSnapshot.data!.uid),
+              ),
+              BlocProvider<FeedCubit>(
+                create: (_) => getIt()..getFeed(authSnapshot.data!.uid),
+              ),
+            ],
             child: BlocConsumer<UserCubit, UserState>(
               listener: (context, state) {
                 if (state is UserError) {
@@ -104,7 +120,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: tabs[_tabSelectedIndex],
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: _onPageChanged,
+        children: tabs,
+      ),
     );
   }
 
@@ -128,5 +148,22 @@ class _HomePageState extends State<HomePage> {
 
   void handleFormNavigation(BuildContext context) {
     Navigator.of(context).pushNamed(PostFormView.routeName);
+  }
+
+  void _onTabChanged(int index) {
+    setState(() {
+      _tabSelectedIndex = index;
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
+  }
+
+  void _onPageChanged(int index) {
+    setState(() {
+      _tabSelectedIndex = index;
+    });
   }
 }

@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
-import 'package:twitter_clone/features/auth/data/datasources/remote_datasource.dart';
-import 'package:twitter_clone/features/auth/data/repositories/repository_impl.dart';
-import 'package:twitter_clone/features/auth/domain/repositories/repository.dart';
-import 'package:twitter_clone/features/auth/ui/cubit/user_cubit.dart';
+import 'package:twitter_clone/features/user/data/datasources/remote_datasource.dart';
+import 'package:twitter_clone/features/user/data/repositories/repository_impl.dart';
+import 'package:twitter_clone/features/user/domain/repositories/repository.dart';
+import 'package:twitter_clone/features/user/ui/cubit/user_cubit.dart';
 import 'package:twitter_clone/features/post/data/datasources/remote_datasource.dart';
 import 'package:twitter_clone/features/post/data/repositories/repository_impl.dart';
 import 'package:twitter_clone/features/post/domain/repositories/repository.dart';
+import 'package:twitter_clone/features/post/ui/cubit/feed_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -40,6 +41,13 @@ void setup() {
   getIt.registerLazySingleton<PostRemoteDatasource>(
     () => PostRemoteDatasourceImpl(
       firestore: FirebaseFirestore.instance,
+    ),
+  );
+
+  getIt.registerFactory<FeedCubit>(
+    () => FeedCubit(
+      postRepository: getIt<PostRepository>(),
+      userRepository: getIt<UserRepository>(),
     ),
   );
 }

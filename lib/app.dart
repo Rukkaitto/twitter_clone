@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:twitter_clone/features/auth/ui/views/register_view.dart';
+import 'package:twitter_clone/features/user/ui/views/register_view.dart';
 import 'package:twitter_clone/features/post/ui/views/post_form_view.dart';
 import 'package:twitter_clone/home.dart';
 
