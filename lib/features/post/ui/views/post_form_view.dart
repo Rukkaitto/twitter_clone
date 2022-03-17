@@ -33,7 +33,7 @@ class PostFormView extends StatelessWidget {
     );
   }
 
-  void handleSubmit(BuildContext context) {
+  void handleSubmit(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
     final post = PostEntity(
@@ -41,6 +41,7 @@ class PostFormView extends StatelessWidget {
       authorUid: user.uid,
       createdAt: DateTime.now().millisecondsSinceEpoch,
     );
-    getIt<PostRepository>().addPost(post);
+    await getIt<PostRepository>().addPost(post);
+    Navigator.of(context).pop();
   }
 }

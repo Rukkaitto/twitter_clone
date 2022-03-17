@@ -29,4 +29,9 @@ class UserRepositoryImpl extends UserRepository {
   Future<void> addFollower(String userUid, String followerUid) {
     return remoteDatasource.addFollower(userUid, followerUid);
   }
+
+  @override
+  Future<List<UserEntity>> searchUsers(String search) {
+    return remoteDatasource.searchUsers(search);
+  }
 }

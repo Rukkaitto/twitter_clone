@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:twitter_clone/features/user/ui/views/register_view.dart';
 
 class LoginView extends StatelessWidget {
   LoginView({Key? key}) : super(key: key);
@@ -48,7 +49,7 @@ class LoginView extends StatelessWidget {
   }
 
   void handleRegister(BuildContext context) {
-    Navigator.pushNamed(context, '/register');
+    Navigator.pushNamed(context, RegisterView.routeName);
   }
 
   void handleLogin(BuildContext context) async {

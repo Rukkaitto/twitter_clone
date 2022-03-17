@@ -5,6 +5,7 @@ import 'package:twitter_clone/features/user/data/datasources/remote_datasource.d
 import 'package:twitter_clone/features/user/data/repositories/repository_impl.dart';
 import 'package:twitter_clone/features/user/domain/repositories/repository.dart';
 import 'package:twitter_clone/features/user/ui/cubit/profile_cubit.dart';
+import 'package:twitter_clone/features/user/ui/cubit/search_cubit.dart';
 import 'package:twitter_clone/features/user/ui/cubit/user_cubit.dart';
 import 'package:twitter_clone/features/post/data/datasources/remote_datasource.dart';
 import 'package:twitter_clone/features/post/data/repositories/repository_impl.dart';
@@ -38,6 +39,12 @@ void setup() {
     () => ProfileCubit(
       userRepository: getIt<UserRepository>(),
       postRepository: getIt<PostRepository>(),
+    ),
+  );
+
+  getIt.registerFactory<SearchCubit>(
+    () => SearchCubit(
+      repository: getIt<UserRepository>(),
     ),
   );
 

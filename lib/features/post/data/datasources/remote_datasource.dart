@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:twitter_clone/features/post/data/models/post_model.dart';
+import 'package:twitter_clone/features/user/data/exceptions/user_not_found_exception.dart';
 import 'package:twitter_clone/features/user/data/models/user_model.dart';
 
 abstract class PostRemoteDatasource {
@@ -33,7 +34,7 @@ class PostRemoteDatasourceImpl implements PostRemoteDatasource {
   @override
   Future<List<PostModel>> getFeed(String userUid) async {
     final user = await firestore.doc('users/$userUid').get();
-    if (user.data() == null) return [];
+    if (user.data() == null) throw UserNotFoundException();
     final userModel = UserModel.fromJson(user.data()!);
 
     final postDocuments = await firestore.collection(collection).get();

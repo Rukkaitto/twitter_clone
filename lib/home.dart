@@ -11,6 +11,7 @@ import 'package:twitter_clone/features/user/ui/cubit/user_cubit.dart';
 import 'package:twitter_clone/features/user/ui/views/login_view.dart';
 import 'package:twitter_clone/features/post/ui/views/post_form_view.dart';
 import 'package:twitter_clone/features/post/ui/views/posts_view.dart';
+import 'package:twitter_clone/features/user/ui/views/search_view.dart';
 import 'package:twitter_clone/features/user/ui/widgets/profile_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -81,52 +82,54 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildLoaded(UserEntity user) {
-    return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        currentIndex: _tabSelectedIndex,
-        onTap: _onTabChanged,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => handleFormNavigation(context),
-        child: const Icon(Icons.edit),
-      ),
-      appBar: AppBar(
-        title: const Text('Twitter Clone'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.exit_to_app),
-            onPressed: handleLogout,
-          ),
-        ],
-      ),
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: _onPageChanged,
-        children: [
-          const PostsView(),
-          const Center(child: Text('Search')),
-          ProfileView(
-            user: user,
-          ),
-        ],
-      ),
-    );
+    return Builder(builder: (context) {
+      return Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          currentIndex: _tabSelectedIndex,
+          onTap: _onTabChanged,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => handleFormNavigation(context, userUid: user.uid),
+          child: const Icon(Icons.edit),
+        ),
+        appBar: AppBar(
+          title: const Text('Twitter Clone'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.exit_to_app),
+              onPressed: handleLogout,
+            ),
+          ],
+        ),
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
+          children: [
+            const PostsView(),
+            const SearchView(),
+            ProfileView(
+              user: user,
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget buildLoading() {
@@ -147,8 +150,10 @@ class _HomePageState extends State<HomePage> {
     FirebaseAuth.instance.signOut();
   }
 
-  void handleFormNavigation(BuildContext context) {
-    Navigator.of(context).pushNamed(PostFormView.routeName);
+  void handleFormNavigation(BuildContext context, {required String userUid}) {
+    Navigator.of(context).pushNamed(PostFormView.routeName).then((_) {
+      context.read<FeedCubit>().getFeed(userUid);
+    });
   }
 
   void _onTabChanged(int index) {

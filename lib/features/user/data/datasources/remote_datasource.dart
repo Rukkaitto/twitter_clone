@@ -7,12 +7,10 @@ import 'package:twitter_clone/features/user/data/models/user_model.dart';
 
 abstract class UserRemoteDatasource {
   Future<UserModel> getUser(String id);
-
   Future<void> addUser(UserModel user);
-
   Future<String> uploadAvatar(String userUid, Uint8List image);
-
   Future<void> addFollower(String userUid, String followerUid);
+  Future<List<UserModel>> searchUsers(String search);
 }
 
 class UserRemoteDatasourceImpl implements UserRemoteDatasource {
@@ -56,5 +54,14 @@ class UserRemoteDatasourceImpl implements UserRemoteDatasource {
     await firestore.doc('$collection/$followerUid').update({
       'following': FieldValue.arrayUnion([userUid])
     });
+  }
+
+  @override
+  Future<List<UserModel>> searchUsers(String search) async {
+    final users = await firestore
+        .collection(collection)
+        .where('username', isGreaterThanOrEqualTo: search)
+        .get();
+    return users.docs.map((doc) => UserModel.fromJson(doc.data())).toList();
   }
 }
