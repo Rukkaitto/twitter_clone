@@ -104,10 +104,13 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => handleFormNavigation(context, userUid: user.uid),
-          child: const Icon(Icons.edit),
-        ),
+        floatingActionButton: _tabSelectedIndex == 0
+            ? FloatingActionButton(
+                onPressed: () =>
+                    handleFormNavigation(context, userUid: user.uid),
+                child: const Icon(Icons.edit),
+              )
+            : null,
         appBar: AppBar(
           title: const Text('Twitter Clone'),
           actions: [

@@ -8,6 +8,8 @@ import 'package:twitter_clone/features/post/ui/widgets/post_widget.dart';
 import 'package:twitter_clone/features/user/domain/entities/user_entity.dart';
 import 'package:twitter_clone/features/user/domain/repositories/repository.dart';
 import 'package:twitter_clone/features/user/ui/cubit/profile_cubit.dart';
+import 'package:twitter_clone/features/user/ui/views/followers_view.dart';
+import 'package:twitter_clone/features/user/ui/views/follows_view.dart';
 
 class ProfileView extends StatelessWidget {
   final UserEntity user;
@@ -53,17 +55,25 @@ class ProfileView extends StatelessWidget {
   }
 
   Widget buildNumbers(UserEntity user, List<PostEntity> posts) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Text('${posts.length} posts'),
-          Text('${user.followers?.length ?? 0} followers'),
-          Text('${user.following?.length ?? 0} follows'),
-        ],
-      ),
-    );
+    return Builder(builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text('${posts.length} posts'),
+            InkWell(
+              onTap: () => handleOnTapFollowers(context, user),
+              child: Text('${user.followers?.length ?? 0} followers'),
+            ),
+            InkWell(
+              onTap: () => handleOnTapFollows(context, user),
+              child: Text('${user.following?.length ?? 0} follows'),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget buildPosts(List<PostEntity> posts) {
@@ -129,5 +139,13 @@ class ProfileView extends StatelessWidget {
         backgroundImage: NetworkImage(user.avatarUrl!),
       );
     }
+  }
+
+  void handleOnTapFollowers(BuildContext context, UserEntity user) {
+    Navigator.pushNamed(context, FollowersView.routeName, arguments: user.uid);
+  }
+
+  void handleOnTapFollows(BuildContext context, UserEntity user) {
+    Navigator.pushNamed(context, FollowsView.routeName, arguments: user.uid);
   }
 }

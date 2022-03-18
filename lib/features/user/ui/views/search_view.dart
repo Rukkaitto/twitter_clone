@@ -4,7 +4,7 @@ import 'package:twitter_clone/core/util/debouncer.dart';
 import 'package:twitter_clone/dependency_injector.dart';
 import 'package:twitter_clone/features/user/domain/entities/user_entity.dart';
 import 'package:twitter_clone/features/user/ui/cubit/search_cubit.dart';
-import 'package:twitter_clone/features/user/ui/views/user_view.dart';
+import 'package:twitter_clone/features/user/ui/widgets/user_list_widget.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({Key? key}) : super(key: key);
@@ -48,7 +48,7 @@ class _SearchViewState extends State<SearchView> {
                 if (state is SearchLoading) {
                   return buildLoading();
                 } else if (state is SearchLoaded) {
-                  return buildLoaded(context, state.users);
+                  return buildLoaded(state.users);
                 }
                 return Container();
               },
@@ -65,33 +65,9 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 
-  Widget buildLoaded(BuildContext context, List<UserEntity> users) {
-    return ListView.separated(
-      shrinkWrap: true,
-      separatorBuilder: (context, index) => const Divider(),
-      itemCount: users.length,
-      itemBuilder: (context, index) {
-        final user = users[index];
-        return ListTile(
-          leading: GestureDetector(
-            onTap: () => handleNavigationToUserView(context, user),
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(user.avatarUrl!),
-            ),
-          ),
-          title: Text('@${user.username}'),
-        );
-      },
-    );
+  Widget buildLoaded(List<UserEntity> users) {
+    return UserListWidget(users: users);
   }
 
   Widget buildLoading() => const Center(child: CircularProgressIndicator());
-
-  void handleNavigationToUserView(BuildContext context, UserEntity user) {
-    Navigator.pushNamed(
-      context,
-      UserView.routeName,
-      arguments: user.uid,
-    );
-  }
 }

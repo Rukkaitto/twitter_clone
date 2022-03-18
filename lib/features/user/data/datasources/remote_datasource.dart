@@ -12,6 +12,8 @@ abstract class UserRemoteDatasource {
   Future<void> addFollower(String userUid, String followerUid);
   Future<void> removeFollower(String userUid, String followerUid);
   Future<List<UserModel>> searchUsers(String search);
+  Future<List<UserModel>> getFollowers(String userUid);
+  Future<List<UserModel>> getFollowing(String userUid);
 }
 
 class UserRemoteDatasourceImpl implements UserRemoteDatasource {
@@ -74,5 +76,31 @@ class UserRemoteDatasourceImpl implements UserRemoteDatasource {
     await firestore.doc('$collection/$followerUid').update({
       'following': FieldValue.arrayRemove([userUid])
     });
+  }
+
+  @override
+  Future<List<UserModel>> getFollowers(String userUid) async {
+    final user = await getUser(userUid);
+    if (user.followers == null) return [];
+
+    final List<UserModel> followers = [];
+    for (final followerUid in user.followers!) {
+      final follower = await getUser(followerUid);
+      followers.add(follower);
+    }
+    return followers;
+  }
+
+  @override
+  Future<List<UserModel>> getFollowing(String userUid) async {
+    final user = await getUser(userUid);
+    if (user.following == null) return [];
+
+    final List<UserModel> following = [];
+    for (final followingUid in user.following!) {
+      final follow = await getUser(followingUid);
+      following.add(follow);
+    }
+    return following;
   }
 }

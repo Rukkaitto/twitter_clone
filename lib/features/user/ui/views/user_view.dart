@@ -67,18 +67,33 @@ class UserView extends StatelessWidget {
   }
 
   Widget buildFollowIconButton(BuildContext context, UserEntity user) {
-    if (user.followers?.contains(FirebaseAuth.instance.currentUser!.uid) ??
-        false) {
-      return IconButton(
-        icon: const Icon(Icons.check),
+    final currentUser = FirebaseAuth.instance.currentUser!;
+    if (user.uid == currentUser.uid) return Container();
+    if (user.followers?.contains(currentUser.uid) ?? false) {
+      return buildAppBarTextButton(
+        'Unfollow',
         onPressed: () => handleUnfollow(context, user.uid),
       );
     } else {
-      return IconButton(
-        icon: const Icon(Icons.add),
+      return buildAppBarTextButton(
+        'Follow',
         onPressed: () => handleFollow(context, user.uid),
       );
     }
+  }
+
+  Widget buildAppBarTextButton(
+    String text, {
+    required VoidCallback onPressed,
+  }) {
+    return IconButton(
+      constraints: const BoxConstraints.expand(width: 80),
+      icon: Text(
+        text,
+        textAlign: TextAlign.center,
+      ),
+      onPressed: onPressed,
+    );
   }
 
   void handleFollow(BuildContext context, String userUid) {

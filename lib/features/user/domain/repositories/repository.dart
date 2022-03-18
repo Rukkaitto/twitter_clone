@@ -9,4 +9,6 @@ abstract class UserRepository {
   Future<String> uploadAvatar(String userUid, Uint8List image);
   Future<void> addFollower(String userUid, String followerUid);
   Future<void> removeFollower(String userUid, String followerUid);
+  Future<List<UserEntity>> getFollowers(String userUid);
+  Future<List<UserEntity>> getFollowing(String userUid);
 }
