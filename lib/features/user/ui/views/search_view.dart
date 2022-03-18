@@ -91,7 +91,7 @@ class _SearchViewState extends State<SearchView> {
     Navigator.pushNamed(
       context,
       UserView.routeName,
-      arguments: user,
+      arguments: user.uid,
     );
   }
 }

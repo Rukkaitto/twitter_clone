@@ -10,6 +10,7 @@ abstract class UserRemoteDatasource {
   Future<void> addUser(UserModel user);
   Future<String> uploadAvatar(String userUid, Uint8List image);
   Future<void> addFollower(String userUid, String followerUid);
+  Future<void> removeFollower(String userUid, String followerUid);
   Future<List<UserModel>> searchUsers(String search);
 }
 
@@ -63,5 +64,15 @@ class UserRemoteDatasourceImpl implements UserRemoteDatasource {
         .where('username', isGreaterThanOrEqualTo: search)
         .get();
     return users.docs.map((doc) => UserModel.fromJson(doc.data())).toList();
+  }
+
+  @override
+  Future<void> removeFollower(String userUid, String followerUid) async {
+    await firestore.doc('$collection/$userUid').update({
+      'followers': FieldValue.arrayRemove([followerUid])
+    });
+    await firestore.doc('$collection/$followerUid').update({
+      'following': FieldValue.arrayRemove([userUid])
+    });
   }
 }

@@ -12,7 +12,9 @@ class UserCubit extends Cubit<UserState> {
   UserCubit({required this.repository}) : super(UserInitial());
 
   void getUser(String id) async {
-    emit(UserLoading());
+    if (state is UserInitial) {
+      emit(UserLoading());
+    }
     try {
       final user = await repository.getUser(id);
       emit(UserLoaded(user: user));

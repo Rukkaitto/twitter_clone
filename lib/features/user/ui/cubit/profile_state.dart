@@ -12,16 +12,14 @@ class ProfileInitial extends ProfileState {}
 class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
-  final UserEntity user;
   final List<PostEntity> posts;
 
   const ProfileLoaded({
-    required this.user,
     required this.posts,
   });
 
   @override
-  List<Object> get props => [user, posts];
+  List<Object> get props => [posts];
 }
 
 class ProfileError extends ProfileState {

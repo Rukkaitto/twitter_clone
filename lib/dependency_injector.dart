@@ -37,7 +37,6 @@ void setup() {
 
   getIt.registerFactory<ProfileCubit>(
     () => ProfileCubit(
-      userRepository: getIt<UserRepository>(),
       postRepository: getIt<PostRepository>(),
     ),
   );

@@ -43,7 +43,7 @@ class PostWidget extends StatelessWidget {
     Navigator.pushNamed(
       context,
       UserView.routeName,
-      arguments: user,
+      arguments: user.uid,
     );
   }
 }

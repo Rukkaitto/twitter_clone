@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:twitter_clone/dependency_injector.dart';
+import 'package:twitter_clone/features/post/domain/entities/post_entity.dart';
 import 'package:twitter_clone/features/post/ui/widgets/post_widget.dart';
 import 'package:twitter_clone/features/user/domain/entities/user_entity.dart';
 import 'package:twitter_clone/features/user/domain/repositories/repository.dart';
@@ -21,7 +22,7 @@ class ProfileView extends StatelessWidget {
           if (state is ProfileLoading) {
             return buildLoading();
           } else if (state is ProfileLoaded) {
-            return buildLoaded(state);
+            return buildLoaded(state.posts);
           }
           return Container();
         },
@@ -35,59 +36,58 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget buildLoaded(ProfileLoaded profile) {
+  Widget buildLoaded(List<PostEntity> posts) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Column(
         children: [
-          buildAvatar(profile.user),
-          buildUsername(profile),
-          buildNumbers(profile),
+          buildAvatar(user),
+          buildUsername(user),
+          buildNumbers(user, posts),
           Expanded(
-            child: buildPosts(profile),
+            child: buildPosts(posts),
           ),
         ],
       ),
     );
   }
 
-  Widget buildNumbers(ProfileLoaded profile) {
+  Widget buildNumbers(UserEntity user, List<PostEntity> posts) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Text('${profile.posts.length} posts'),
-          Text('${profile.user.followers?.length ?? 0} followers'),
-          Text('${profile.user.following?.length ?? 0} follows'),
+          Text('${posts.length} posts'),
+          Text('${user.followers?.length ?? 0} followers'),
+          Text('${user.following?.length ?? 0} follows'),
         ],
       ),
     );
   }
 
-  Widget buildPosts(ProfileLoaded profile) {
+  Widget buildPosts(List<PostEntity> posts) {
     return ListView.separated(
       shrinkWrap: true,
-      itemCount: profile.posts.length,
+      itemCount: posts.length,
       itemBuilder: (context, index) {
-        final post = profile.posts[index];
-        return PostWidget(user: profile.user, post: post);
+        final post = posts[index];
+        return PostWidget(user: user, post: post);
       },
       separatorBuilder: (context, index) => const Divider(),
     );
   }
 
-  Widget buildUsername(ProfileLoaded profile) {
+  Widget buildUsername(UserEntity user) {
     final currentUser = FirebaseAuth.instance.currentUser;
-    final showFollowsYou =
-        profile.user.following?.contains(currentUser?.uid) ?? false;
+    final showFollowsYou = user.following?.contains(currentUser?.uid) ?? false;
 
     return Builder(builder: (context) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            '@${profile.user.username}',
+            '@${user.username}',
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
